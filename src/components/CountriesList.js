@@ -10,7 +10,7 @@ const CountriesList = ({ countries }) => {
             return (
               <NavLink
                 className="list-group-item list-group-item-action"
-                to={`${country.alpha3Code}`}
+                to={`/${country.alpha3Code}`}
                 key={country.alpha3Code}
                 style={{ textAlign: 'center' }}
               >

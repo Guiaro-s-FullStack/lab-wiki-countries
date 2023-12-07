@@ -10,9 +10,7 @@ import NavBar from './components/NavBar';
 const App = () => {
   const [countries, setCountries] = useState([]);
 
-  useEffect(() => {
-    setCountries(countriesData);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
