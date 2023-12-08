@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const CountryDetails = ({ countries }) => {
   const { alpha3Code } = useParams();
 
-  const country = countries.find(
-    (country) => country.alpha3Code === alpha3Code
-  );
+  const [country, setCountry] = useState();
+  const [loading, setLoading] = useState(true);
 
-  return (
+  const getOneCountry = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://ih-countries-api.herokuapp.com/countries/${alpha3Code}`
+      );
+      setCountry(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    getOneCountry();
+  }, [alpha3Code]);
+
+  return !loading ? (
     <div className="col-7">
       <img
-        src={`https://flagpedia.net/data/flags/icon/72x54/${country.alpha2Code.toLowerCase()}.png`}
+        src={`https://flagpedia.net/data/flags/icon/72x54/${country?.alpha2Code?.toLowerCase()}.png`}
       />
       <h1>{country?.name.common}</h1>
       <table className="table">
@@ -51,6 +68,8 @@ const CountryDetails = ({ countries }) => {
         </tbody>
       </table>
     </div>
+  ) : (
+    <div className="col-7">LOADING...</div>
   );
 };
 

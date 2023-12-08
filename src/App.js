@@ -1,31 +1,59 @@
 import './App.css';
-import countriesData from './countries.json';
 import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import CountriesList from './components/CountriesList';
 import CountryDetails from './components/CountryDetails';
 import NavBar from './components/NavBar';
+import axios from 'axios';
 
 const App = () => {
   const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {}, []);
+  const getCountries = async () => {
+    try {
+      const { data } = await axios.get(
+        'https://ih-countries-api.herokuapp.com/countries'
+      );
+      setCountries(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const getCountries = () => {
+  //   axios
+  //     .get('https://ih-countries-api.herokuapp.com/countries')
+  //     .then(({ data }) => {
+  //       setCountries(data);
+  //       setLoading(false);
+  //     });
+  // };
+
+  useEffect(() => {
+    getCountries();
+  }, []);
 
   return (
     <>
       <NavBar />
-      <div className="container">
-        <div className="row">
-          <CountriesList countries={countries} />
-          <Routes>
-            <Route
-              path=":alpha3Code"
-              element={<CountryDetails countries={countries} />}
-            />
-          </Routes>
+      {!loading ? (
+        <div className="container">
+          <div className="row">
+            <CountriesList countries={countries} />
+            <Routes>
+              <Route
+                path=":alpha3Code"
+                element={<CountryDetails countries={countries} />}
+              />
+            </Routes>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div>LOADING....</div>
+      )}
     </>
   );
 };
